@@ -76,6 +76,22 @@ const SPECS = [
       place: "position:absolute;left:0;top:50%;transform:translateY(-50%)" },
   ]),
 
+  // Email: newsletter header (Mailchimp) + signature logo
+  { out: "email/newsletter-header-1200x300.png", w: 1200, h: 300, bg: PAPER,
+    svg: `svg/wordmark/full/axiom-full-w${W}-gradient.svg`, logoW: 260,
+    place: "position:absolute;left:64px;top:50%;transform:translateY(-50%)" },
+  { out: "email/newsletter-header-ink-1200x300.png", w: 1200, h: 300, bg: INK,
+    svg: `svg/wordmark/full/axiom-full-w${W}-paper.svg`, logoW: 260,
+    place: "position:absolute;left:64px;top:50%;transform:translateY(-50%)" },
+  { out: "email/signature-logo-600w.png", w: 600, h: 176, bg: null,
+    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 600,
+    place: "position:absolute;left:0;top:50%;transform:translateY(-50%)" },
+
+  // YouTube channel art (2560×1440; logo inside the 1546×423 all-device safe area)
+  { out: "social/youtube-banner-2560x1440.png", w: 2560, h: 1440, bg: PAPER,
+    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 460,
+    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
+
   // Weight comparison sheet for review
   { out: "weight-compare.png", w: 1600, h: 1100, bg: PAPER,
     svg: "svg/weight-compare.svg", logoW: 1500,

@@ -26,8 +26,15 @@ outlined paths — no font required to use any file here.
 | Avatar (any platform) | `png/social/avatar-400.png` (transparent corners) |
 | GitHub org icon | `png/social/github-org-500.png` |
 | Favicons / app icons | `png/favicons/axiom-icon-{32,180,512,1024}.png` |
+| Newsletter header (Mailchimp) | `png/email/newsletter-header-1200x300.png` (+ ink) |
+| Email signature | `png/email/signature-logo-600w.png` |
+| YouTube channel art | `png/social/youtube-banner-2560x1440.png` |
 | Slides & docs (transparent) | `png/wordmark/axiom-{full,compact}-{gradient,ink,paper,white}-2400w.png` |
 | Anything vector | `svg/wordmark/**`, `svg/mark/**` — six colors × three weights |
+| Everything at once | [Download the repo as zip](https://github.com/TheAxiomFoundation/axiom-brand/archive/refs/heads/main.zip) |
+
+Print vendors: the SVGs are what most vendors want (vector, paths only). If someone
+insists on PDF/EPS or CMYK, ask — we'll add exports rather than let them retrace.
 
 ## Weights
 
@@ -51,5 +58,12 @@ node scripts/render-png.mjs --weight 350  # channel PNGs via headless Chrome
 - Amber gradient on paper; paper wordmark on ink or amber; never amber-on-amber.
 - The ∀ tile is the only square-format mark. Don't crop the wordmark into a square.
 - Minimum clear space: half the ∀'s width on all sides.
+
+## Usage terms
+
+The ∀XIOM wordmark and mark identify the Axiom Foundation. Partners and press may use
+these files unmodified to reference Axiom (articles, integration pages, event
+materials). Don't alter colors/geometry, imply endorsement, or use the mark for your
+own product identity. Questions: hello@axiom-foundation.org.
 
 Geist is used under the [SIL Open Font License](https://github.com/vercel/geist-font).

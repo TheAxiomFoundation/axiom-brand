@@ -2,3 +2,4 @@ node_modules/
 .stage/
 .vercel/
 .DS_Store
+.vercel

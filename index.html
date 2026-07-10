@@ -87,6 +87,9 @@ fill("g-mark", [
 fill("g-zoom", ["zoom-paper","zoom-ink","zoom-paper-centered"].map(n => asset(`png/zoom/${n}.png`, null, "#e8e6e1")));
 fill("g-linkedin", ["company-logo-400","company-logo-ink-400","company-cover-1128x191","personal-banner-1584x396","personal-banner-ink-1584x396"].map(n => asset(`png/linkedin/${n}.png`, null, "#e8e6e1")));
 fill("g-social", [
+  asset("png/social/youtube-banner-2560x1440.png", null, "#e8e6e1"),
+  ...["newsletter-header-1200x300","newsletter-header-ink-1200x300"].map(n => asset(`png/email/${n}.png`, null, "#e8e6e1")),
+  asset("png/email/signature-logo-600w.png"),
   ...["og-1200x630","og-ink-1200x630","x-header-1500x500"].map(n => asset(`png/social/${n}.png`, null, "#e8e6e1")),
   asset("png/social/avatar-400.png"), asset("png/social/github-org-500.png"),
   ...[512,180].map(s => asset(`png/favicons/axiom-icon-${s}.png`)),
