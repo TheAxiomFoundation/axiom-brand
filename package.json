@@ -1,0 +1,17 @@
+{
+  "name": "axiom-brand",
+  "version": "1.0.0",
+  "description": "Axiom Foundation logo kit \u2014 wordmarks, marks, and channel-ready assets",
+  "scripts": {
+    "gen": "node scripts/gen-svg.mjs",
+    "render": "node scripts/render-png.mjs",
+    "build": "node scripts/gen-svg.mjs && node scripts/render-png.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fontkit": "^2.0.4"
+  },
+  "private": true
+}
