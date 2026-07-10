@@ -3,7 +3,7 @@
 The Axiom Foundation logo kit — every wordmark, mark, color, size, and channel export,
 generated from one source of truth.
 
-**Browse & download:** the [preview page](https://axiom-brand.vercel.app) shows everything.
+**Browse & download:** the [preview page](https://axiom-brand-sigma.vercel.app) shows everything.
 **Grab-and-go:** clone this repo, or link partners straight to the preview page.
 
 ## The logo
