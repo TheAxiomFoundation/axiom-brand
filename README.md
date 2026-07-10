@@ -33,6 +33,7 @@ outlined paths — no font required to use any file here.
 | YouTube channel art (2560×1440) | `png/social/youtube-banner-{paper,ink}-{full,compact}.png` |
 | Slides & docs (transparent, 2400w) | `png/wordmark/axiom-{full,compact}-{gradient,amber,ink,paper,white,black}-2400w.png` |
 | Anything vector | `svg/wordmark/**`, `svg/mark/**` — six colors × three weights |
+| Design treatments (gradients + oversize ∀) | `png/{zoom,linkedin,social,email}/*-{amberwash,inkglow,amberdeep,glyph-paper,glyph-ink}-full.png` |
 | Everything at once | [Download the repo as zip](https://github.com/TheAxiomFoundation/axiom-brand/archive/refs/heads/main.zip) |
 
 Print vendors: the SVGs are what most vendors want (vector, paths only). If someone
@@ -54,6 +55,10 @@ node scripts/render-png.mjs --weight 350  # channel PNGs via headless Chrome
 ```
 
 ## Rules of use
+
+- **Until brand recognition is established, outward-facing surfaces use the FULL
+  lockup (FOUNDATION under AXIOM).** Compact ∀XIOM is for constrained spaces
+  (favicons excepted — the ∀ tile); internal tools may use either.
 
 - Don't retype the wordmark in a live font — always use these files (isomorphism applies
   to logos too: one source, many faithful renderings).

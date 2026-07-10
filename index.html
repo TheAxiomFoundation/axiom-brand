@@ -84,6 +84,10 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
 <h2>Zoom backgrounds — 1920×1080</h2>
 <div class="grid" id="g-zoom"></div>
 
+<h2>Design treatments</h2>
+<p class="note">Gradient washes and the oversize-∀ motif, applied per channel (full lockup — the outward-facing default until brand recognition). <em>amberwash</em> = warm radial tints on paper · <em>inkglow</em> = amber glow on ink · <em>amberdeep</em> = full amber gradient · <em>glyph</em> = oversize ∀ bleeding off the edge.</p>
+<div class="grid" id="g-design"></div>
+
 <h2>LinkedIn</h2>
 <p class="note">Company logo 400×400 · company page cover 1128×191 · personal profile banner 1584×396.</p>
 <div class="grid" id="g-linkedin"></div>
@@ -112,6 +116,9 @@ fill("g-mark", [
 ]);
 const matrix = (dir, name) => ["paper","ink"].flatMap(bg => ["full","compact"].map(l => asset(`png/${dir}/${name}-${bg}-${l}.png`, null, "#e8e6e1")));
 fill("g-zoom", [...matrix("zoom","zoom"), ...matrix("zoom","zoom-centered")]);
+const TREATS = ["amberwash","inkglow","amberdeep","glyph-paper","glyph-ink"];
+const DESIGN = [["zoom","zoom"],["linkedin","personal-banner"],["linkedin","company-cover"],["social","og"],["social","x-header"],["social","youtube-banner"],["email","newsletter-header"]];
+fill("g-design", DESIGN.flatMap(([dir,name]) => TREATS.map(t => asset(`png/${dir}/${name}-${t}-full.png`, null, "#e8e6e1"))));
 fill("g-linkedin", [
   asset("png/social/avatar-400.png"), asset("png/social/avatar-ink-400.png"),
   ...matrix("linkedin","company-cover"), ...matrix("linkedin","personal-banner"),

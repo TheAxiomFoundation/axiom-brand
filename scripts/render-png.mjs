@@ -29,7 +29,8 @@ const aspect = (rel) => {
 };
 
 const SPECS = [];
-const add = (out, w, h, bg, svg, logoW, place) => SPECS.push({ out, w, h, bg, svg, logoW, place });
+const add = (out, w, h, bg, svg, logoW, place, extra = {}) =>
+  SPECS.push({ out, w, h, bg, svg, logoW, place, ...extra });
 /* tight transparent export: canvas exactly fits the SVG at the given width */
 const tight = (out, svg, w) =>
   add(out, w, Math.round(w / aspect(svg)), null, svg, w, "position:absolute;inset:0");
@@ -54,6 +55,34 @@ for (const c of CHANNELS)
   for (const [bgName, bg] of Object.entries(BG))
     for (const [lk, svgFor] of Object.entries(LOCKUP))
       add(`${c.dir}/${c.name}-${bgName}-${lk}.png`, c.w, c.h, bg.hex, svgFor(bg.logo), c.logoW[lk], c.place);
+
+/* Design treatments — gradient washes and the oversize-glyph motif.
+   Policy: until brand recognition, outward surfaces default to the FULL lockup. */
+const MARK = (c) => `svg/mark/axiom-mark-w${W}-${c}.svg`;
+const TREATMENTS = {
+  amberwash: {
+    css: "radial-gradient(circle at 12% 0%, rgba(217,119,6,0.12), transparent 45%), radial-gradient(circle at 92% 100%, rgba(146,64,14,0.10), transparent 42%), #faf9f6",
+    logo: "gradient",
+  },
+  inkglow: {
+    css: "radial-gradient(circle at 82% 0%, rgba(251,191,36,0.13), transparent 55%), #1c1917",
+    logo: "paper",
+  },
+  amberdeep: { css: "linear-gradient(135deg,#b45309 0%,#8a3d08 100%)", logo: "paper" },
+  "glyph-paper": {
+    css: "#faf9f6", logo: "gradient",
+    behind: () => `<img src="file://${join(root, MARK("amber"))}" style="position:absolute;right:-5%;top:50%;transform:translateY(-50%);height:175%;opacity:0.07">`,
+  },
+  "glyph-ink": {
+    css: "#1c1917", logo: "paper",
+    behind: () => `<img src="file://${join(root, MARK("paper"))}" style="position:absolute;right:-5%;top:50%;transform:translateY(-50%);height:175%;opacity:0.055">`,
+  },
+};
+const DESIGN_CHANNELS = CHANNELS.filter((c) => c.name !== "zoom-centered");
+for (const c of DESIGN_CHANNELS)
+  for (const [tName, t] of Object.entries(TREATMENTS))
+    add(`${c.dir}/${c.name}-${tName}-full.png`, c.w, c.h, null, LOCKUP.full(t.logo), c.logoW.full, c.place,
+        { bgCss: t.css, behind: t.behind ? t.behind() : "" });
 
 /* Email signature — transparent, tight, both lockups (gradient + ink) */
 for (const lk of ["full", "compact"])
@@ -89,8 +118,10 @@ mkdirSync(stage, { recursive: true });
 for (const s of SPECS) {
   const outPath = join(root, "png", s.out);
   mkdirSync(dirname(outPath), { recursive: true });
+  const bgValue = s.bgCss ?? s.bg ?? "transparent";
   const html = `<!doctype html><meta charset="utf-8">
-<style>html,body{margin:0;width:${s.w}px;height:${s.h}px;background:${s.bg ?? "transparent"};overflow:hidden}</style>
+<style>html,body{margin:0;width:${s.w}px;height:${s.h}px;background:${bgValue};overflow:hidden}</style>
+${s.behind ?? ""}
 <img src="file://${join(root, s.svg)}" style="${s.place};width:${s.logoW}px">`;
   const page = join(stage, "stage.html");
   writeFileSync(page, html);
