@@ -18,20 +18,20 @@ outlined paths — no font required to use any file here.
 
 | Need | File |
 |---|---|
-| Zoom virtual background | `png/zoom/zoom-paper.png` (light) / `zoom-ink.png` (dark) |
-| LinkedIn company logo | `png/linkedin/company-logo-400.png` |
-| LinkedIn page cover | `png/linkedin/company-cover-1128x191.png` |
-| LinkedIn personal banner | `png/linkedin/personal-banner-1584x396.png` (+ ink variant) |
-| Social share / OG image | `png/social/og-1200x630.png` (+ ink) |
-| X / Twitter header | `png/social/x-header-1500x500.png` |
-| Avatar (any platform) | `png/social/avatar-400.png` (transparent corners) |
-| GitHub org icon | `png/social/github-org-500.png` |
+| Zoom virtual background | `png/zoom/zoom-{paper,ink}-{full,compact}.png` (+ `zoom-centered-…`) |
+| LinkedIn company logo / avatar | `png/social/avatar-400.png` (+ ink) |
+| LinkedIn page cover (1128×191) | `png/linkedin/company-cover-{paper,ink}-{full,compact}.png` |
+| LinkedIn personal banner (1584×396) | `png/linkedin/personal-banner-{paper,ink}-{full,compact}.png` |
+| Social share / OG image (1200×630) | `png/social/og-{paper,ink}-{full,compact}.png` |
+| X / Twitter header (1500×500) | `png/social/x-header-{paper,ink}-{full,compact}.png` |
+| Avatar (any platform) | `png/social/avatar-400.png` / `avatar-ink-400.png` |
+| GitHub org icon | `png/social/github-org-500.png` (+ ink) |
 | Favicons / app icons | `png/favicons/axiom-icon-{32,180,512,1024}.png` + `png/favicons/favicon.ico` |
 | Designers / print / Slides | `pdf/*.pdf` (vector: full, compact, mark, tile — gradient/ink/black) |
-| Newsletter header (Mailchimp) | `png/email/newsletter-header-1200x300.png` (+ ink) |
-| Email signature | `png/email/signature-logo-600w.png` |
-| YouTube channel art | `png/social/youtube-banner-2560x1440.png` |
-| Slides & docs (transparent) | `png/wordmark/axiom-{full,compact}-{gradient,ink,paper,white}-2400w.png` |
+| Newsletter header (1200×300) | `png/email/newsletter-header-{paper,ink}-{full,compact}.png` |
+| Email signature (transparent) | `png/email/signature-{full,compact}-{gradient,ink}-600w.png` |
+| YouTube channel art (2560×1440) | `png/social/youtube-banner-{paper,ink}-{full,compact}.png` |
+| Slides & docs (transparent, 2400w) | `png/wordmark/axiom-{full,compact}-{gradient,amber,ink,paper,white,black}-2400w.png` |
 | Anything vector | `svg/wordmark/**`, `svg/mark/**` — six colors × three weights |
 | Everything at once | [Download the repo as zip](https://github.com/TheAxiomFoundation/axiom-brand/archive/refs/heads/main.zip) |
 

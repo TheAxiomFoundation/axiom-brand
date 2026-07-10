@@ -12,7 +12,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const font = fontkit.openSync(join(root, "fonts/Geist-Variable.ttf"));
 const UPEM = font.unitsPerEm; // 1000
 
-const WEIGHTS = [300, 350, 400];
+const WEIGHTS = [300, 350, 400, 450];
 const RECOMMENDED = 350;
 
 const COLORS = {
@@ -83,18 +83,26 @@ function compact(wght, color) {
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
-function full(wght, color) {
+function full(wght, color, snug = false) {
   const l = layout("AXIOM", wght, 14);
   const s = SIZE / UPEM;
   const wordW = l.width * s;
   const cap = l.capHeight * s;
   const SUB = 80;
-  // FOUNDATION: letterspaced to span the wordmark width exactly
-  const subNat = layout("FOUNDATION", Math.min(wght + 50, 450));
   const subS = SUB / UPEM;
-  const n = subNat.glyphs.length;
-  const track = (wordW / subS - subNat.width) / (n - 1);
-  const sub = layout("FOUNDATION", Math.min(wght + 50, 450), track);
+  let sub, subX;
+  if (snug) {
+    // Ariel variant: heavier FOUNDATION, fixed 0.10em tracking, centered
+    sub = layout("FOUNDATION", Math.min(wght + 100, 500), 100);
+    subX = PAD + (wordW - sub.width * subS) / 2;
+  } else {
+    // classic: letterspaced to span the wordmark width exactly
+    const subWght = Math.min(wght + 50, 450);
+    const subNat = layout("FOUNDATION", subWght);
+    const track = (wordW / subS - subNat.width) / (subNat.glyphs.length - 1);
+    sub = layout("FOUNDATION", subWght, track);
+    subX = PAD;
+  }
   const gap = 46;
   const subCap = sub.capHeight * subS;
   const w = wordW + PAD * 2;
@@ -102,7 +110,7 @@ function full(wght, color) {
   const body =
     glyphGroup(l, SIZE, PAD, PAD + cap, fillFor(color), true) +
     "\n  " +
-    glyphGroup(sub, SUB, PAD, PAD + cap + gap + subCap, fillFor(color), false);
+    glyphGroup(sub, SUB, subX, PAD + cap + gap + subCap, fillFor(color), false);
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
@@ -135,6 +143,7 @@ function tile(wght, bg, glyphColor, radiusPct = 16) {
 for (const w of WEIGHTS) {
   for (const color of Object.keys(COLORS)) {
     write(`svg/wordmark/full/axiom-full-w${w}-${color}.svg`, full(w, color));
+    write(`svg/wordmark/full-snug/axiom-full-snug-w${w}-${color}.svg`, full(w, color, true));
     write(`svg/wordmark/compact/axiom-w${w}-${color}.svg`, compact(w, color));
     write(`svg/mark/axiom-mark-w${w}-${color}.svg`, mark(w, color));
   }

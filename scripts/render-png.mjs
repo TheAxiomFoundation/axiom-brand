@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* Renders channel PNGs from the SVG masters via headless Chrome.
    Usage: node scripts/render-png.mjs [--weight 350]
-   Each spec builds a one-off HTML stage at the exact pixel size, places the SVG,
-   and screenshots it (transparent background where bg is null). */
+   Every wordmark channel is emitted as a full matrix: {paper, ink} × {full, compact}.
+   Transparent exports use tight canvases computed from the SVG's real viewBox. */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,90 +17,75 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const PAPER = "#faf9f6", INK = "#1c1917";
+const LOCKUP = {
+  full: (c) => `svg/wordmark/full/axiom-full-w${W}-${c}.svg`,
+  compact: (c) => `svg/wordmark/compact/axiom-w${W}-${c}.svg`,
+};
+const BG = { paper: { hex: PAPER, logo: "gradient" }, ink: { hex: INK, logo: "paper" } };
 
-/* spec: out, w, h, bg (null = transparent), svg path, place: css for the img wrapper, logoW */
-const SPECS = [
-  // Zoom virtual backgrounds (1920×1080) — quiet field, lockup anchored bottom-left
-  { out: "zoom/zoom-paper.png", w: 1920, h: 1080, bg: PAPER,
-    svg: `svg/wordmark/full/axiom-full-w${W}-gradient.svg`, logoW: 380,
-    place: "position:absolute;left:72px;bottom:64px" },
-  { out: "zoom/zoom-ink.png", w: 1920, h: 1080, bg: INK,
-    svg: `svg/wordmark/full/axiom-full-w${W}-paper.svg`, logoW: 380,
-    place: "position:absolute;left:72px;bottom:64px" },
-  { out: "zoom/zoom-paper-centered.png", w: 1920, h: 1080, bg: PAPER,
-    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 560,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
+const aspect = (rel) => {
+  const [, w, h] = readFileSync(join(root, rel), "utf8").match(/viewBox="0 0 (\d+) (\d+)"/);
+  return +w / +h;
+};
 
-  // LinkedIn
-  { out: "linkedin/company-logo-400.png", w: 400, h: 400, bg: PAPER,
-    svg: `svg/mark/tile/axiom-tile-w${W}-paper.svg`, logoW: 400, place: "position:absolute;inset:0" },
-  { out: "linkedin/company-logo-ink-400.png", w: 400, h: 400, bg: INK,
-    svg: `svg/mark/tile/axiom-tile-w${W}-ink.svg`, logoW: 400, place: "position:absolute;inset:0" },
-  { out: "linkedin/company-cover-1128x191.png", w: 1128, h: 191, bg: PAPER,
-    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 300,
-    place: "position:absolute;left:56px;top:50%;transform:translateY(-50%)" },
-  { out: "linkedin/personal-banner-1584x396.png", w: 1584, h: 396, bg: PAPER,
-    svg: `svg/wordmark/full/axiom-full-w${W}-gradient.svg`, logoW: 330,
-    place: "position:absolute;right:96px;top:50%;transform:translateY(-50%)" },
-  { out: "linkedin/personal-banner-ink-1584x396.png", w: 1584, h: 396, bg: INK,
-    svg: `svg/wordmark/full/axiom-full-w${W}-paper.svg`, logoW: 330,
-    place: "position:absolute;right:96px;top:50%;transform:translateY(-50%)" },
+const SPECS = [];
+const add = (out, w, h, bg, svg, logoW, place) => SPECS.push({ out, w, h, bg, svg, logoW, place });
+/* tight transparent export: canvas exactly fits the SVG at the given width */
+const tight = (out, svg, w) =>
+  add(out, w, Math.round(w / aspect(svg)), null, svg, w, "position:absolute;inset:0");
 
-  // Social / OG
-  { out: "social/og-1200x630.png", w: 1200, h: 630, bg: PAPER,
-    svg: `svg/wordmark/full/axiom-full-w${W}-gradient.svg`, logoW: 520,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
-  { out: "social/og-ink-1200x630.png", w: 1200, h: 630, bg: INK,
-    svg: `svg/wordmark/full/axiom-full-w${W}-paper.svg`, logoW: 520,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
-  { out: "social/x-header-1500x500.png", w: 1500, h: 500, bg: PAPER,
-    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 420,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
-  { out: "social/avatar-400.png", w: 400, h: 400, bg: null,
-    svg: `svg/mark/tile/axiom-tile-w${W}-paper.svg`, logoW: 400, place: "position:absolute;inset:0" },
-  { out: "social/github-org-500.png", w: 500, h: 500, bg: null,
-    svg: `svg/mark/tile/axiom-tile-w${W}-paper.svg`, logoW: 500, place: "position:absolute;inset:0" },
+const CENTER = "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)";
+const LEFT = "position:absolute;left:64px;top:50%;transform:translateY(-50%)";
+const RIGHT = "position:absolute;right:96px;top:50%;transform:translateY(-50%)";
+const CORNER = "position:absolute;left:72px;bottom:64px";
 
-  // Favicons / app icons
-  ...[32, 180, 512, 1024].map((s) => ({
-    out: `favicons/axiom-icon-${s}.png`, w: s, h: s, bg: null,
-    svg: `svg/mark/tile/axiom-tile-w${W}-paper.svg`, logoW: s, place: "position:absolute;inset:0",
-  })),
-
-  // Transparent wordmark PNGs for slides/docs
-  ...["gradient", "ink", "paper", "white"].flatMap((c) => [
-    { out: `wordmark/axiom-full-${c}-2400w.png`, w: 2400, h: 1030, bg: null,
-      svg: `svg/wordmark/full/axiom-full-w${W}-${c}.svg`, logoW: 2400, place: "position:absolute;inset:0" },
-    { out: `wordmark/axiom-compact-${c}-2400w.png`, w: 2400, h: 700, bg: null,
-      svg: `svg/wordmark/compact/axiom-w${W}-${c}.svg`, logoW: 2400,
-      place: "position:absolute;left:0;top:50%;transform:translateY(-50%)" },
-  ]),
-
-  // Email: newsletter header (Mailchimp) + signature logo
-  { out: "email/newsletter-header-1200x300.png", w: 1200, h: 300, bg: PAPER,
-    svg: `svg/wordmark/full/axiom-full-w${W}-gradient.svg`, logoW: 260,
-    place: "position:absolute;left:64px;top:50%;transform:translateY(-50%)" },
-  { out: "email/newsletter-header-ink-1200x300.png", w: 1200, h: 300, bg: INK,
-    svg: `svg/wordmark/full/axiom-full-w${W}-paper.svg`, logoW: 260,
-    place: "position:absolute;left:64px;top:50%;transform:translateY(-50%)" },
-  { out: "email/signature-logo-600w.png", w: 600, h: 176, bg: null,
-    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 600,
-    place: "position:absolute;left:0;top:50%;transform:translateY(-50%)" },
-
-  // YouTube channel art (2560×1440; logo inside the 1546×423 all-device safe area)
-  { out: "social/youtube-banner-2560x1440.png", w: 2560, h: 1440, bg: PAPER,
-    svg: `svg/wordmark/compact/axiom-w${W}-gradient.svg`, logoW: 460,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
-
-  // Weight comparison sheet for review
-  { out: "weight-compare.png", w: 1600, h: 1100, bg: PAPER,
-    svg: "svg/weight-compare.svg", logoW: 1500,
-    place: "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" },
+/* Wordmark channels — full matrix {paper,ink} × {full,compact} */
+const CHANNELS = [
+  { dir: "zoom", name: "zoom", w: 1920, h: 1080, place: CORNER, logoW: { full: 380, compact: 440 } },
+  { dir: "zoom", name: "zoom-centered", w: 1920, h: 1080, place: CENTER, logoW: { full: 560, compact: 640 } },
+  { dir: "linkedin", name: "company-cover", w: 1128, h: 191, place: LEFT, logoW: { full: 300, compact: 330 } },
+  { dir: "linkedin", name: "personal-banner", w: 1584, h: 396, place: RIGHT, logoW: { full: 330, compact: 400 } },
+  { dir: "social", name: "og", w: 1200, h: 630, place: CENTER, logoW: { full: 520, compact: 600 } },
+  { dir: "social", name: "x-header", w: 1500, h: 500, place: CENTER, logoW: { full: 380, compact: 440 } },
+  { dir: "social", name: "youtube-banner", w: 2560, h: 1440, place: CENTER, logoW: { full: 420, compact: 480 } },
+  { dir: "email", name: "newsletter-header", w: 1200, h: 300, place: LEFT, logoW: { full: 240, compact: 300 } },
 ];
+for (const c of CHANNELS)
+  for (const [bgName, bg] of Object.entries(BG))
+    for (const [lk, svgFor] of Object.entries(LOCKUP))
+      add(`${c.dir}/${c.name}-${bgName}-${lk}.png`, c.w, c.h, bg.hex, svgFor(bg.logo), c.logoW[lk], c.place);
 
+/* Email signature — transparent, tight, both lockups (gradient + ink) */
+for (const lk of ["full", "compact"])
+  for (const color of ["gradient", "ink"])
+    tight(`email/signature-${lk}-${color}-600w.png`, LOCKUP[lk](color), 600);
+
+/* Square marks: tiles for avatars/org icons in both colorways */
+for (const [n, svg] of [
+  ["avatar-400", `svg/mark/tile/axiom-tile-w${W}-paper.svg`],
+  ["avatar-ink-400", `svg/mark/tile/axiom-tile-w${W}-ink.svg`],
+]) add(`social/${n}.png`, 400, 400, null, svg, 400, "position:absolute;inset:0");
+for (const [n, svg] of [
+  ["github-org-500", `svg/mark/tile/axiom-tile-w${W}-paper.svg`],
+  ["github-org-ink-500", `svg/mark/tile/axiom-tile-w${W}-ink.svg`],
+]) add(`social/${n}.png`, 500, 500, null, svg, 500, "position:absolute;inset:0");
+
+/* Favicons / app icons (paper tile is canonical) */
+for (const s of [32, 180, 512, 1024])
+  add(`favicons/axiom-icon-${s}.png`, s, s, null, `svg/mark/tile/axiom-tile-w${W}-paper.svg`, s, "position:absolute;inset:0");
+
+/* Transparent wordmark PNGs for slides/docs — ALL six colors × both lockups, tight */
+for (const c of ["gradient", "amber", "ink", "paper", "white", "black"]) {
+  tight(`wordmark/axiom-full-${c}-2400w.png`, LOCKUP.full(c), 2400);
+  tight(`wordmark/axiom-compact-${c}-2400w.png`, LOCKUP.compact(c), 2400);
+}
+
+/* Weight comparison sheet */
+add("weight-compare.png", 1600, 1100, PAPER, "svg/weight-compare.svg", 1500, CENTER);
+
+/* ── render ── */
 const stage = join(root, ".stage");
 mkdirSync(stage, { recursive: true });
-
 for (const s of SPECS) {
   const outPath = join(root, "png", s.out);
   mkdirSync(dirname(outPath), { recursive: true });
@@ -119,4 +104,4 @@ for (const s of SPECS) {
   console.log(`png/${s.out}`);
 }
 rmSync(stage, { recursive: true, force: true });
-console.log("done");
+console.log(`done — ${SPECS.length} PNGs`);
