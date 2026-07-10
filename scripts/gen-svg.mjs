@@ -88,10 +88,18 @@ function full(wght, color, subTrack = null) {
   const s = SIZE / UPEM;
   const wordW = l.width * s;
   const cap = l.capHeight * s;
-  const SUB = 80;
-  const subS = SUB / UPEM;
+  let SUB = 80;
+  let subS = SUB / UPEM;
   let sub, subX;
-  if (subTrack !== null) {
+  if (subTrack === "fit") {
+    // width-exact: size the subline so FOUNDATION spans the wordmark precisely
+    const subWght = Math.min(wght + 50, 450);
+    const probe = layout("FOUNDATION", subWght, 100); // 0.10em tracking
+    SUB = (wordW / probe.width) * UPEM;
+    subS = SUB / UPEM;
+    sub = probe;
+    subX = PAD;
+  } else if (subTrack !== null) {
     // fixed-tracking variants (Ariel direction): heavier FOUNDATION, centered
     sub = layout("FOUNDATION", Math.min(wght + 100, 500), subTrack);
     subX = PAD + (wordW - sub.width * subS) / 2;
@@ -147,6 +155,7 @@ for (const w of WEIGHTS) {
     for (const t of [300, 220, 160, 100])
       write(`svg/wordmark/full-t${t / 10}/axiom-full-t${t / 10}-w${w}-${color}.svg`, full(w, color, t));
     write(`svg/wordmark/full-snug/axiom-full-snug-w${w}-${color}.svg`, full(w, color, 100));
+    write(`svg/wordmark/full-fit/axiom-full-fit-w${w}-${color}.svg`, full(w, color, "fit"));
     write(`svg/wordmark/compact/axiom-w${w}-${color}.svg`, compact(w, color));
     write(`svg/mark/axiom-mark-w${w}-${color}.svg`, mark(w, color));
   }

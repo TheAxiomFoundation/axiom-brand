@@ -60,7 +60,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
     <button class="st-arrow" id="st-next" aria-label="Next option">→</button>
   </div>
   <div class="studio-controls">
-    <span class="st-group">FOUNDATION <button class="filter st-style" data-v="full">justified</button><button class="filter st-style" data-v="full-t30">0.30em</button><button class="filter st-style" data-v="full-t22">0.22em</button><button class="filter st-style" data-v="full-t16">0.16em</button><button class="filter st-style" data-v="full-t10">0.10em</button></span>
+    <span class="st-group">FOUNDATION <button class="filter st-style" data-v="full">justified</button><button class="filter st-style" data-v="full-t30">0.30em</button><button class="filter st-style" data-v="full-t22">0.22em</button><button class="filter st-style" data-v="full-t16">0.16em</button><button class="filter st-style" data-v="full-t10">0.10em</button><button class="filter st-style" data-v="full-fit">fit width</button></span>
     <span class="st-group">weight <button class="filter st-w" data-v="300">300</button><button class="filter st-w" data-v="350">350 ✓</button><button class="filter st-w" data-v="400">400</button><button class="filter st-w" data-v="450">450</button></span>
     <span class="st-group">background <button class="filter st-bg" data-v="paper">paper</button><button class="filter st-bg" data-v="ink">ink</button></span>
     <a id="st-dl" class="st-download" download>download this SVG</a>
@@ -126,7 +126,7 @@ fill("g-social", [
 /* ── Lockup studio ── */
 const st = { style: "full", w: "350", bg: "paper" };
 const stOptions = [];
-for (const style of ["full","full-t30","full-t22","full-t16","full-t10"]) for (const w of ["300","350","400","450"]) stOptions.push({style, w});
+for (const style of ["full","full-t30","full-t22","full-t16","full-t10","full-fit"]) for (const w of ["300","350","400","450"]) stOptions.push({style, w});
 const stSrc = () => {
   const color = st.bg === "ink" ? "paper" : "gradient";
   return st.style === "full"
