@@ -92,12 +92,21 @@ function full(wght, color, subTrack = null) {
   let subS = SUB / UPEM;
   let sub, subX;
   if (subTrack === "fit") {
-    // width-exact: size the subline so FOUNDATION spans the wordmark precisely
+    // width-exact, maximal letters: tracking pinned at 0.10em, size solved
     const subWght = Math.min(wght + 50, 450);
-    const probe = layout("FOUNDATION", subWght, 100); // 0.10em tracking
+    const probe = layout("FOUNDATION", subWght, 100);
     SUB = (wordW / probe.width) * UPEM;
     subS = SUB / UPEM;
     sub = probe;
+    subX = PAD;
+  } else if (subTrack && typeof subTrack === "object" && subTrack.fitSize) {
+    // width-exact at a chosen size: tracking solved (floored at 0.10em)
+    SUB = subTrack.fitSize;
+    subS = SUB / UPEM;
+    const subWght = Math.min(wght + 50, 450);
+    const nat = layout("FOUNDATION", subWght);
+    const track = Math.max(100, (wordW / subS - nat.width) / (nat.glyphs.length - 1));
+    sub = layout("FOUNDATION", subWght, track);
     subX = PAD;
   } else if (subTrack !== null) {
     // fixed-tracking variants (Ariel direction): heavier FOUNDATION, centered
@@ -156,6 +165,9 @@ for (const w of WEIGHTS) {
       write(`svg/wordmark/full-t${t / 10}/axiom-full-t${t / 10}-w${w}-${color}.svg`, full(w, color, t));
     write(`svg/wordmark/full-snug/axiom-full-snug-w${w}-${color}.svg`, full(w, color, 100));
     write(`svg/wordmark/full-fit/axiom-full-fit-w${w}-${color}.svg`, full(w, color, "fit"));
+    // width-exact family at intermediate subline sizes (justified = size 80 end of the scale)
+    for (const fs of [95, 110, 125])
+      write(`svg/wordmark/full-fit${fs}/axiom-full-fit${fs}-w${w}-${color}.svg`, full(w, color, { fitSize: fs }));
     write(`svg/wordmark/compact/axiom-w${w}-${color}.svg`, compact(w, color));
     write(`svg/mark/axiom-mark-w${w}-${color}.svg`, mark(w, color));
   }
