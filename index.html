@@ -38,7 +38,7 @@ code{font:400 .82em var(--f-mono);background:#f5f5f4;border-radius:4px;padding:.
 <h1>The ∀XIOM logo kit</h1>
 <p class="lede">Official wordmarks, marks, and channel-ready exports. Everything is generated
 from one source (Geist, outlined to paths — no font needed to use these). SVGs scale to any
-size; PNGs are pre-sized per channel. Checkered tiles indicate transparency.</p>
+size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the repo too. Checkered tiles indicate transparency.</p>
 
 <h2>Weight study</h2>
 <p class="note">Current site wordmark is weight 300; the kit's channel exports use <strong>350</strong> (the "a bit more" candidate). 400 included for comparison — everything can be re-rendered at any weight with one command.</p>
@@ -75,11 +75,12 @@ Please don't retype the wordmark in a live font — always use these files.</p>
 </footer>
 
 <script>
-const asset = (src, dl, solid) => `<div class="asset"><div class="thumb${solid ? " solid" : ""}" ${solid ? `style="background:${solid}"` : ""}><img loading="lazy" src="${src}" alt=""></div><div class="meta"><span class="name">${src.split("/").pop()}</span><a href="${dl ?? src}" download>download</a></div></div>`;
+const asset = (src, dl, solid, pdf) => `<div class="asset"><div class="thumb${solid ? " solid" : ""}" ${solid ? `style="background:${solid}"` : ""}><img loading="lazy" src="${src}" alt=""></div><div class="meta"><span class="name">${src.split("/").pop()}</span><span>${pdf ? `<a href="${pdf}" download style="margin-right:.7rem">pdf</a>` : ""}<a href="${dl ?? src}" download>svg</a></span></div></div>`;
 const fill = (id, items) => document.getElementById(id).innerHTML = items.join("");
 const colors = ["gradient","amber","ink","paper","white","black"];
-fill("g-full", colors.map(c => asset(`svg/wordmark/full/axiom-full-w350-${c}.svg`)));
-fill("g-compact", colors.map(c => asset(`svg/wordmark/compact/axiom-w350-${c}.svg`)));
+const pdfFor = (c, n) => ["gradient","ink","black"].includes(c) ? `pdf/${n}.pdf` : null;
+fill("g-full", colors.map(c => asset(`svg/wordmark/full/axiom-full-w350-${c}.svg`, null, null, pdfFor(c, `axiom-full-w350-${c}`))));
+fill("g-compact", colors.map(c => asset(`svg/wordmark/compact/axiom-w350-${c}.svg`, null, null, pdfFor(c, `axiom-w350-${c}`))));
 fill("g-mark", [
   ...["gradient","ink","paper"].map(c => asset(`svg/mark/axiom-mark-w350-${c}.svg`)),
   asset("svg/mark/tile/axiom-tile-w350-paper.svg"), asset("svg/mark/tile/axiom-tile-w350-ink.svg"), asset("svg/mark/tile/axiom-tile-w350-amber.svg"),

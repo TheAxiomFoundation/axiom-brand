@@ -5,7 +5,7 @@
   "scripts": {
     "gen": "node scripts/gen-svg.mjs",
     "render": "node scripts/render-png.mjs",
-    "build": "node scripts/gen-svg.mjs && node scripts/render-png.mjs"
+    "build": "node scripts/gen-svg.mjs && node scripts/render-png.mjs && node scripts/export-pdf.mjs && node scripts/make-ico.mjs"
   },
   "keywords": [],
   "author": "",

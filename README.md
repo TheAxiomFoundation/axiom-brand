@@ -5,6 +5,7 @@ generated from one source of truth.
 
 **Browse & download:** the [preview page](https://axiom-brand-sigma.vercel.app) shows everything.
 **Grab-and-go:** clone this repo, or link partners straight to the preview page.
+**Formats:** SVG (any size) · PNG (channel-sized, incl. transparent) · **PDF** (vector, for designers/print/Slides) · **ICO** (favicon.ico, 16+32+48).
 
 ## The logo
 
@@ -25,7 +26,8 @@ outlined paths — no font required to use any file here.
 | X / Twitter header | `png/social/x-header-1500x500.png` |
 | Avatar (any platform) | `png/social/avatar-400.png` (transparent corners) |
 | GitHub org icon | `png/social/github-org-500.png` |
-| Favicons / app icons | `png/favicons/axiom-icon-{32,180,512,1024}.png` |
+| Favicons / app icons | `png/favicons/axiom-icon-{32,180,512,1024}.png` + `png/favicons/favicon.ico` |
+| Designers / print / Slides | `pdf/*.pdf` (vector: full, compact, mark, tile — gradient/ink/black) |
 | Newsletter header (Mailchimp) | `png/email/newsletter-header-1200x300.png` (+ ink) |
 | Email signature | `png/email/signature-logo-600w.png` |
 | YouTube channel art | `png/social/youtube-banner-2560x1440.png` |
