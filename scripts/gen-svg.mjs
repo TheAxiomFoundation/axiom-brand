@@ -200,7 +200,18 @@ function fullFlush(wght, color) {
 
 /* Studio lockups: orthogonal FOUNDATION weight × alignment at AXIOM w350.
    All share the optical left indent; "edges" also locks the right to the M. */
-const FI = { fi0: 0, fi1: 1 / 12, fi2: 1 / 8, fi3: 1 / 5 }; // F-indent as fraction of the ∀'s ink width
+/* F-indent as a fraction of the ∀'s diagonal run: from its ink-left (widest point,
+   top of the flipped A) to the apex vertex at the bottom — fi5 = the apex itself. */
+const FI = { fi0: 0, fi1: 0.2, fi2: 0.3, fi3: 0.5, fi4: 0.75, fi5: 1 };
+function apexRun(wght) {
+  const g = font.getVariation({ wght }).layout("A").glyphs[0];
+  const maxY = g.path.bbox.maxY;
+  let apexLeft = Infinity;
+  for (const c of g.path.commands)
+    for (let i = 0; i + 1 < c.args.length; i += 2)
+      if (c.args[i + 1] >= maxY - 2) apexLeft = Math.min(apexLeft, c.args[i]);
+  return apexLeft - g.path.bbox.minX; // font units from ink-left to the apex vertex
+}
 function studioLockup(align, subWght, color, fi = "fi2", wght = 350) {
   const l = layout("AXIOM", wght, 14);
   const s = SIZE / UPEM;
@@ -209,8 +220,7 @@ function studioLockup(align, subWght, color, fi = "fi2", wght = 350) {
   const inkW = (l.inkRight - l.inkLeft) * s;
   const SUB = 80;
   const subS = SUB / UPEM;
-  const aInk = layout("A", wght);
-  const optical = FI[fi] * (aInk.inkRight - aInk.inkLeft) * s;
+  const optical = FI[fi] * apexRun(wght) * s;
   let sub, subX;
   if (align === "edges") {
     const nat = layout("FOUNDATION", subWght);
