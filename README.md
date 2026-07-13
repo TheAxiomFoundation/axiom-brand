@@ -9,8 +9,9 @@ generated from one source of truth.
 
 ## The logo
 
-**∀XIOM** — the universal quantifier (a flipped A) plus XIOM, set in Geist, with
-FOUNDATION as a letterspaced subline in the full lockup. Colors: the amber gradient
+**∀XIOM** — the universal quantifier (a flipped A) plus XIOM, set in Geist (weight 350), with
+FOUNDATION as a letterspaced subline (weight 500) in the full lockup: its F optically
+indented 30% of the run to the ∀'s apex, its N ending exactly at the M's stroke. Colors: the amber gradient
 `#b45309 → #8a3d08` on paper `#faf9f6`, or paper-on-ink `#1c1917`. The glyphs are
 outlined paths — no font required to use any file here.
 

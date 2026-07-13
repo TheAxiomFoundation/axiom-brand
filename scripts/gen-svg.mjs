@@ -89,6 +89,10 @@ function compact(wght, color) {
 }
 
 function full(wght, color, subTrack = null, align = "center") {
+  // Canonical lockup (settled in the studio): edges alignment — FOUNDATION spans
+  // to the M's stroke — F indented 30% of the run to the ∀'s apex, FOUNDATION at
+  // weight 500 for the recommended w350 (kept one 150-step heavier at other weights).
+  if (subTrack === null) return studioLockup("edges", Math.min(wght + 150, 600), color, "fi2", wght);
   const l = layout("AXIOM", wght, 14);
   const s = SIZE / UPEM;
   const wordW = l.width * s;
@@ -113,17 +117,10 @@ function full(wght, color, subTrack = null, align = "center") {
     const track = Math.max(100, (wordW / subS - nat.width) / (nat.glyphs.length - 1));
     sub = layout("FOUNDATION", subWght, track);
     subX = PAD;
-  } else if (subTrack !== null) {
+  } else {
     // fixed-tracking variants (Ariel direction): heavier FOUNDATION
     sub = layout("FOUNDATION", Math.min(wght + 100, 500), subTrack);
     subX = align === "left" ? PAD : PAD + (wordW - sub.width * subS) / 2;
-  } else {
-    // classic: letterspaced to span the wordmark width exactly
-    const subWght = Math.min(wght + 50, 450);
-    const subNat = layout("FOUNDATION", subWght);
-    const track = (wordW / subS - subNat.width) / (subNat.glyphs.length - 1);
-    sub = layout("FOUNDATION", subWght, track);
-    subX = PAD;
   }
   const gap = 46;
   const subCap = sub.capHeight * subS;
