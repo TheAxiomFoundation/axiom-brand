@@ -200,7 +200,8 @@ function fullFlush(wght, color) {
 
 /* Studio lockups: orthogonal FOUNDATION weight × alignment at AXIOM w350.
    All share the optical left indent; "edges" also locks the right to the M. */
-function studioLockup(align, subWght, color, wght = 350) {
+const FI = { fi0: 0, fi1: 1 / 12, fi2: 1 / 8, fi3: 1 / 5 }; // F-indent as fraction of the ∀'s ink width
+function studioLockup(align, subWght, color, fi = "fi2", wght = 350) {
   const l = layout("AXIOM", wght, 14);
   const s = SIZE / UPEM;
   const cap = l.capHeight * s;
@@ -209,7 +210,7 @@ function studioLockup(align, subWght, color, wght = 350) {
   const SUB = 80;
   const subS = SUB / UPEM;
   const aInk = layout("A", wght);
-  const optical = (((aInk.inkRight - aInk.inkLeft) / 2) / 2 / 2) * s;
+  const optical = FI[fi] * (aInk.inkRight - aInk.inkLeft) * s;
   let sub, subX;
   if (align === "edges") {
     const nat = layout("FOUNDATION", subWght);
@@ -233,10 +234,13 @@ function studioLockup(align, subWght, color, wght = 350) {
     glyphGroup(sub, SUB, subX, PAD + cap + gap + subCap, fillFor(color), false);
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
-for (const align of ["edges", "left", "center"])
-  for (const fw of [400, 450, 500, 550])
-    for (const color of ["gradient", "paper"])
-      write(`svg/wordmark/studio/axiom-${align}-fw${fw}-${color}.svg`, studioLockup(align, fw, color));
+for (const fw of [400, 450, 500, 550])
+  for (const color of ["gradient", "paper"]) {
+    for (const align of ["edges", "left"])
+      for (const fi of Object.keys(FI))
+        write(`svg/wordmark/studio/axiom-${align}-fw${fw}-${fi}-${color}.svg`, studioLockup(align, fw, color, fi));
+    write(`svg/wordmark/studio/axiom-center-fw${fw}-${color}.svg`, studioLockup("center", fw, color));
+  }
 
 /* ── Mark (∀ alone) and tile ── */
 function mark(wght, color) {
