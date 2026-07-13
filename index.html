@@ -55,7 +55,7 @@ from one source (Geist, outlined to paths — no font needed to use these). SVGs
 size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the repo too. Checkered tiles indicate transparency.</p>
 
 <h2>Lockup studio</h2>
-<p class="note"><strong>AXIOM weight is settled: 350.</strong> Three lockups remain in play: <strong>flush (proposed)</strong> — the site-today subline size, one weight heavier, right edge locked to the M's stroke, left edge optically indented against the ∀'s diagonal (straight strokes must sit slightly inside a diagonal to look flush); <em>site today</em> — the current version (N pokes past the M); <em>aligned, larger</em> — same flush edges with a bigger, tighter subline. The full exploration (weights, tracking scales, fit sizes) lives in <code>svg/wordmark/</code> if ever needed.</p>
+<p class="note"><strong>AXIOM weight is settled: 350.</strong> Two knobs remain: <strong>alignment</strong> — <em>edges</em> (FOUNDATION spans to the M's stroke, F optically indented against the ∀'s diagonal), <em>left</em> (natural width, flush left), <em>centered</em>, or <em>site today</em> for reference — and <strong>FOUNDATION weight</strong> at unchanged size (AXIOM is 350; 450 is the working pick). Arrows or ← → cycle all combinations; download follows the stage.</p>
 <div class="studio">
   <div class="studio-stage" id="st-stage">
     <button class="st-arrow" id="st-prev" aria-label="Previous option">←</button>
@@ -63,7 +63,8 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
     <button class="st-arrow" id="st-next" aria-label="Next option">→</button>
   </div>
   <div class="studio-controls">
-    <span class="st-group">FOUNDATION <button class="filter st-style" data-v="full-flush">flush (proposed)</button><button class="filter st-style" data-v="full">site today</button><button class="filter st-style" data-v="full-aligned">aligned, larger</button></span>
+    <span class="st-group">alignment <button class="filter st-al" data-v="edges">edges</button><button class="filter st-al" data-v="left">left</button><button class="filter st-al" data-v="center">centered</button><button class="filter st-al" data-v="site">site today</button></span>
+    <span class="st-group">FOUNDATION weight <button class="filter st-fw" data-v="400">400</button><button class="filter st-fw" data-v="450">450</button><button class="filter st-fw" data-v="500">500</button><button class="filter st-fw" data-v="550">550</button></span>
     <span class="st-group">background <button class="filter st-bg" data-v="paper">paper</button><button class="filter st-bg" data-v="ink">ink</button></span>
     <a id="st-dl" class="st-download" download>download this SVG</a>
   </div>
@@ -133,28 +134,35 @@ fill("g-social", [
 ]);
 
 /* ── Lockup studio ── */
-const st = { style: "full-flush", w: "350", bg: "paper" };
+const st = { al: "edges", fw: "450", bg: "paper" };
 const stOptions = [];
-for (const style of ["full-flush","full","full-aligned"]) stOptions.push({style, w: "350"});
+for (const al of ["edges","left","center"]) for (const fw of ["400","450","500","550"]) stOptions.push({al, fw});
 const stSrc = () => {
   const color = st.bg === "ink" ? "paper" : "gradient";
-  return st.style === "full"
-    ? `svg/wordmark/full/axiom-full-w${st.w}-${color}.svg`
-    : `svg/wordmark/${st.style}/axiom-${st.style}-w${st.w}-${color}.svg`;
+  return st.al === "site"
+    ? `svg/wordmark/full/axiom-full-w350-${color}.svg`
+    : `svg/wordmark/studio/axiom-${st.al}-fw${st.fw}-${color}.svg`;
 };
 const stRender = () => {
   document.getElementById("st-img").src = stSrc();
   document.getElementById("st-dl").href = stSrc();
   document.getElementById("st-stage").classList.toggle("ink", st.bg === "ink");
-  document.querySelectorAll(".st-style").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === st.style)));
+  document.querySelectorAll(".st-al").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === st.al)));
+  document.querySelectorAll(".st-fw").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.v === st.fw && st.al !== "site"));
+    b.disabled = st.al === "site";
+    b.style.opacity = st.al === "site" ? .4 : 1;
+  });
   document.querySelectorAll(".st-bg").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === st.bg)));
 };
-document.querySelectorAll(".st-style").forEach(b => b.addEventListener("click", () => { st.style = b.dataset.v; stRender(); }));
+document.querySelectorAll(".st-al").forEach(b => b.addEventListener("click", () => { st.al = b.dataset.v; stRender(); }));
+document.querySelectorAll(".st-fw").forEach(b => b.addEventListener("click", () => { st.fw = b.dataset.v; st.al = st.al === "site" ? "edges" : st.al; stRender(); }));
 document.querySelectorAll(".st-bg").forEach(b => b.addEventListener("click", () => { st.bg = b.dataset.v; stRender(); }));
 const stStep = (d) => {
-  const i = stOptions.findIndex(o => o.style === st.style && o.w === st.w);
+  if (st.al === "site") { st.al = "edges"; stRender(); return; }
+  const i = stOptions.findIndex(o => o.al === st.al && o.fw === st.fw);
   const n = stOptions[(i + d + stOptions.length) % stOptions.length];
-  st.style = n.style; st.w = n.w; stRender();
+  st.al = n.al; st.fw = n.fw; stRender();
 };
 document.getElementById("st-prev").addEventListener("click", () => stStep(-1));
 document.getElementById("st-next").addEventListener("click", () => stStep(1));

@@ -198,6 +198,46 @@ function fullFlush(wght, color) {
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
+/* Studio lockups: orthogonal FOUNDATION weight × alignment at AXIOM w350.
+   All share the optical left indent; "edges" also locks the right to the M. */
+function studioLockup(align, subWght, color, wght = 350) {
+  const l = layout("AXIOM", wght, 14);
+  const s = SIZE / UPEM;
+  const cap = l.capHeight * s;
+  const inkL = PAD + l.inkLeft * s;
+  const inkW = (l.inkRight - l.inkLeft) * s;
+  const SUB = 80;
+  const subS = SUB / UPEM;
+  const aInk = layout("A", wght);
+  const optical = (((aInk.inkRight - aInk.inkLeft) / 2) / 2 / 2) * s;
+  let sub, subX;
+  if (align === "edges") {
+    const nat = layout("FOUNDATION", subWght);
+    const targetW = inkW - optical;
+    const track = (targetW / subS - (nat.inkRight - nat.inkLeft)) / (nat.glyphs.length - 1);
+    sub = layout("FOUNDATION", subWght, track);
+    subX = inkL + optical - sub.inkLeft * subS;
+  } else {
+    sub = layout("FOUNDATION", subWght, 180); // 0.18em
+    subX = align === "left"
+      ? inkL + optical - sub.inkLeft * subS
+      : inkL + (inkW - (sub.inkRight - sub.inkLeft) * subS) / 2 - sub.inkLeft * subS;
+  }
+  const gap = 46;
+  const subCap = sub.capHeight * subS;
+  const w = l.width * s + PAD * 2;
+  const h = cap + gap + subCap + PAD * 2;
+  const body =
+    glyphGroup(l, SIZE, PAD, PAD + cap, fillFor(color), true) +
+    "\n  " +
+    glyphGroup(sub, SUB, subX, PAD + cap + gap + subCap, fillFor(color), false);
+  return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
+}
+for (const align of ["edges", "left", "center"])
+  for (const fw of [400, 450, 500, 550])
+    for (const color of ["gradient", "paper"])
+      write(`svg/wordmark/studio/axiom-${align}-fw${fw}-${color}.svg`, studioLockup(align, fw, color));
+
 /* ── Mark (∀ alone) and tile ── */
 function mark(wght, color) {
   const l = layout("A", wght);
