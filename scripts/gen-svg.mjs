@@ -171,12 +171,22 @@ function fullFlush(wght, color) {
   const inkW = (l.inkRight - l.inkLeft) * s;
   const SUB = 80;
   const subS = SUB / UPEM;
-  const subWght = Math.min(wght + 50, 450);
+  // Optical left indent: the ∀'s left edge is a diagonal receding toward its apex,
+  // so a straight stroke (the F) placed at the same ink-x reads as hanging left.
+  // Indent by half the diagonal's inset at mid-cap-height, measured from the glyph:
+  // the A's left diagonal runs from its wide end to the apex across the cap height.
+  const aBox = l.glyphs[0];
+  const aInk = layout("A", wght);
+  const diagonalRun = (aInk.inkRight - aInk.inkLeft) / 2 - 0; // half-width ≈ run to apex
+  const midInset = diagonalRun / 2;                            // inset at mid-height
+  const optical = (midInset / 2) * s;                          // align to half the mid-inset
+  const subWght = Math.min(wght + 100, 500);                   // one step heavier, same size
   const nat = layout("FOUNDATION", subWght);
-  const natInkW = nat.inkRight - nat.inkLeft; // font units, ink only
-  const track = (inkW / subS - natInkW) / (nat.glyphs.length - 1);
+  const natInkW = nat.inkRight - nat.inkLeft;
+  const targetW = inkW - optical;                              // right edge stays locked at the M
+  const track = (targetW / subS - natInkW) / (nat.glyphs.length - 1);
   const sub = layout("FOUNDATION", subWght, track);
-  const subX = inkL - sub.inkLeft * subS;
+  const subX = inkL + optical - sub.inkLeft * subS;
   const gap = 46;
   const subCap = sub.capHeight * subS;
   const w = l.width * s + PAD * 2;
