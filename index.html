@@ -55,7 +55,7 @@ from one source (Geist, outlined to paths — no font needed to use these). SVGs
 size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the repo too. Checkered tiles indicate transparency.</p>
 
 <h2>Lockup studio</h2>
-<p class="note"><strong>AXIOM weight is settled: 350.</strong> Three lockups remain in play: <strong>aligned (proposed)</strong> — FOUNDATION's visible edges match AXIOM's exactly, side bearings accounted for, 0.18em tracking; <em>site today</em> — the current justified subline; <em>centered</em> — a caption-style alternative. The full exploration (weights, tracking scales, fit sizes) lives in <code>svg/wordmark/</code> if ever needed.</p>
+<p class="note"><strong>AXIOM weight is settled: 350.</strong> Three lockups remain in play: <strong>flush (proposed)</strong> — the site-today subline, but letterspaced against AXIOM's visible ink so FOUNDATION never overflows past the M's stroke; <em>site today</em> — the current version (N pokes past the M); <em>aligned, larger</em> — same flush edges with a bigger, tighter subline. The full exploration (weights, tracking scales, fit sizes) lives in <code>svg/wordmark/</code> if ever needed.</p>
 <div class="studio">
   <div class="studio-stage" id="st-stage">
     <button class="st-arrow" id="st-prev" aria-label="Previous option">←</button>
@@ -63,7 +63,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
     <button class="st-arrow" id="st-next" aria-label="Next option">→</button>
   </div>
   <div class="studio-controls">
-    <span class="st-group">FOUNDATION <button class="filter st-style" data-v="full-aligned">aligned (proposed)</button><button class="filter st-style" data-v="full">site today</button><button class="filter st-style" data-v="full-t16">centered</button></span>
+    <span class="st-group">FOUNDATION <button class="filter st-style" data-v="full-flush">flush (proposed)</button><button class="filter st-style" data-v="full">site today</button><button class="filter st-style" data-v="full-aligned">aligned, larger</button></span>
     <span class="st-group">background <button class="filter st-bg" data-v="paper">paper</button><button class="filter st-bg" data-v="ink">ink</button></span>
     <a id="st-dl" class="st-download" download>download this SVG</a>
   </div>
@@ -133,9 +133,9 @@ fill("g-social", [
 ]);
 
 /* ── Lockup studio ── */
-const st = { style: "full-aligned", w: "350", bg: "paper" };
+const st = { style: "full-flush", w: "350", bg: "paper" };
 const stOptions = [];
-for (const style of ["full-aligned","full","full-t16"]) stOptions.push({style, w: "350"});
+for (const style of ["full-flush","full","full-aligned"]) stOptions.push({style, w: "350"});
 const stSrc = () => {
   const color = st.bg === "ink" ? "paper" : "gradient";
   return st.style === "full"

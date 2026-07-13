@@ -160,6 +160,34 @@ function fullAligned(wght, color) {
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
+/* Site-today lockup, flush: same subline size/weight as the current site, but the
+   letterspacing is solved against AXIOM's visible ink — F starts at the ∀'s ink,
+   N ends exactly at the M's stroke (no overflow past it). */
+function fullFlush(wght, color) {
+  const l = layout("AXIOM", wght, 14);
+  const s = SIZE / UPEM;
+  const cap = l.capHeight * s;
+  const inkL = PAD + l.inkLeft * s;
+  const inkW = (l.inkRight - l.inkLeft) * s;
+  const SUB = 80;
+  const subS = SUB / UPEM;
+  const subWght = Math.min(wght + 50, 450);
+  const nat = layout("FOUNDATION", subWght);
+  const natInkW = nat.inkRight - nat.inkLeft; // font units, ink only
+  const track = (inkW / subS - natInkW) / (nat.glyphs.length - 1);
+  const sub = layout("FOUNDATION", subWght, track);
+  const subX = inkL - sub.inkLeft * subS;
+  const gap = 46;
+  const subCap = sub.capHeight * subS;
+  const w = l.width * s + PAD * 2;
+  const h = cap + gap + subCap + PAD * 2;
+  const body =
+    glyphGroup(l, SIZE, PAD, PAD + cap, fillFor(color), true) +
+    "\n  " +
+    glyphGroup(sub, SUB, subX, PAD + cap + gap + subCap, fillFor(color), false);
+  return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
+}
+
 /* ── Mark (∀ alone) and tile ── */
 function mark(wght, color) {
   const l = layout("A", wght);
@@ -190,6 +218,7 @@ for (const w of WEIGHTS) {
   for (const color of Object.keys(COLORS)) {
     write(`svg/wordmark/full/axiom-full-w${w}-${color}.svg`, full(w, color));
     write(`svg/wordmark/full-aligned/axiom-full-aligned-w${w}-${color}.svg`, fullAligned(w, color));
+    write(`svg/wordmark/full-flush/axiom-full-flush-w${w}-${color}.svg`, fullFlush(w, color));
     // fixed-tracking FOUNDATION scale (em ×100): t30 airy … t10 snug — centered and left-aligned
     for (const t of [300, 220, 160, 100]) {
       write(`svg/wordmark/full-t${t / 10}/axiom-full-t${t / 10}-w${w}-${color}.svg`, full(w, color, t));
