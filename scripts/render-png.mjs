@@ -35,10 +35,22 @@ const add = (out, w, h, bg, svg, logoW, place, extra = {}) =>
 const tight = (out, svg, w) =>
   add(out, w, Math.round(w / aspect(svg)), null, svg, w, "position:absolute;inset:0");
 
-const CENTER = "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)";
-const LEFT = "position:absolute;left:64px;top:50%;transform:translateY(-50%)";
-const RIGHT = "position:absolute;right:96px;top:50%;transform:translateY(-50%)";
+/* Placement tokens, resolved to pixel positions per spec at render time.
+   Percentage centering (top:50% + translateY) is off-limits: position:absolute
+   resolves against Chrome's layout viewport, which is clamped to a minimum
+   height (~284px) regardless of --window-size — short canvases like the
+   LinkedIn company cover (191px) would center in the invisible clamped
+   viewport and clip at the bottom of the screenshot. */
+const CENTER = "center", LEFT = "left", RIGHT = "right";
 const CORNER = "position:absolute;left:72px;bottom:64px";
+const resolvePlace = (s) => {
+  if (s.place !== CENTER && s.place !== LEFT && s.place !== RIGHT) return s.place;
+  const logoH = s.logoW / aspect(s.svg);
+  const top = ((s.h - logoH) / 2).toFixed(1);
+  if (s.place === CENTER) return `position:absolute;left:${((s.w - s.logoW) / 2).toFixed(1)}px;top:${top}px`;
+  if (s.place === LEFT) return `position:absolute;left:64px;top:${top}px`;
+  return `position:absolute;right:96px;top:${top}px`;
+};
 
 /* Wordmark channels — full matrix {paper,ink} × {full,compact} */
 const CHANNELS = [
@@ -122,7 +134,7 @@ for (const s of SPECS) {
   const html = `<!doctype html><meta charset="utf-8">
 <style>html,body{margin:0;width:${s.w}px;height:${s.h}px;background:${bgValue};overflow:hidden}</style>
 ${s.behind ?? ""}
-<img src="file://${join(root, s.svg)}" style="${s.place};width:${s.logoW}px">`;
+<img src="file://${join(root, s.svg)}" style="${resolvePlace(s)};width:${s.logoW}px">`;
   const page = join(stage, "stage.html");
   writeFileSync(page, html);
   execFileSync(CHROME, [
