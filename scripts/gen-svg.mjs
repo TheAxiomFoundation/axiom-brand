@@ -83,7 +83,7 @@ function compact(wght, color) {
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
-function full(wght, color, subTrack = null) {
+function full(wght, color, subTrack = null, align = "center") {
   const l = layout("AXIOM", wght, 14);
   const s = SIZE / UPEM;
   const wordW = l.width * s;
@@ -109,9 +109,9 @@ function full(wght, color, subTrack = null) {
     sub = layout("FOUNDATION", subWght, track);
     subX = PAD;
   } else if (subTrack !== null) {
-    // fixed-tracking variants (Ariel direction): heavier FOUNDATION, centered
+    // fixed-tracking variants (Ariel direction): heavier FOUNDATION
     sub = layout("FOUNDATION", Math.min(wght + 100, 500), subTrack);
-    subX = PAD + (wordW - sub.width * subS) / 2;
+    subX = align === "left" ? PAD : PAD + (wordW - sub.width * subS) / 2;
   } else {
     // classic: letterspaced to span the wordmark width exactly
     const subWght = Math.min(wght + 50, 450);
@@ -160,9 +160,11 @@ function tile(wght, bg, glyphColor, radiusPct = 16) {
 for (const w of WEIGHTS) {
   for (const color of Object.keys(COLORS)) {
     write(`svg/wordmark/full/axiom-full-w${w}-${color}.svg`, full(w, color));
-    // fixed-tracking FOUNDATION scale (em ×100): t30 airy … t10 snug
-    for (const t of [300, 220, 160, 100])
+    // fixed-tracking FOUNDATION scale (em ×100): t30 airy … t10 snug — centered and left-aligned
+    for (const t of [300, 220, 160, 100]) {
       write(`svg/wordmark/full-t${t / 10}/axiom-full-t${t / 10}-w${w}-${color}.svg`, full(w, color, t));
+      write(`svg/wordmark/full-l${t / 10}/axiom-full-l${t / 10}-w${w}-${color}.svg`, full(w, color, t, "left"));
+    }
     write(`svg/wordmark/full-snug/axiom-full-snug-w${w}-${color}.svg`, full(w, color, 100));
     write(`svg/wordmark/full-fit/axiom-full-fit-w${w}-${color}.svg`, full(w, color, "fit"));
     // width-exact family at intermediate subline sizes (justified = size 80 end of the scale)

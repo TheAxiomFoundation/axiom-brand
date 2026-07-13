@@ -52,7 +52,7 @@ from one source (Geist, outlined to paths — no font needed to use these). SVGs
 size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the repo too. Checkered tiles indicate transparency.</p>
 
 <h2>Lockup studio</h2>
-<p class="note"><strong>AXIOM weight is settled: 350</strong> (all channel exports use it). The open question is the FOUNDATION treatment: <em>justified</em> (letterspaced to the wordmark's width, current site style) a <em>width-exact</em> family (FOUNDATION spans the wordmark precisely — letter size and letterspacing trade off, from justified's small-and-airy to fit-max's large-and-snug), or a <em>centered</em> heavier scale (0.30em → 0.10em) that doesn't width-match. Flip through everything below; arrows or keys ← → work too.</p>
+<p class="note"><strong>AXIOM weight is settled: 350</strong> (all channel exports use it). The open question is the FOUNDATION treatment: <em>justified</em> (letterspaced to the wordmark's width, current site style) a <em>width-exact</em> family (FOUNDATION spans the wordmark precisely — letter size and letterspacing trade off, from justified's small-and-airy to fit-max's large-and-snug), or heavier fixed-tracking scales (0.30em → 0.10em) that don't width-match — <em>centered</em> under the wordmark, or <em>left-aligned</em> flush with the ∀. Flip through everything below; arrows or keys ← → work too.</p>
 <div class="studio">
   <div class="studio-stage" id="st-stage">
     <button class="st-arrow" id="st-prev" aria-label="Previous option">←</button>
@@ -62,6 +62,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
   <div class="studio-controls">
     <span class="st-group">width-exact <button class="filter st-style" data-v="full">justified</button><button class="filter st-style" data-v="full-fit95">fit 95</button><button class="filter st-style" data-v="full-fit110">fit 110</button><button class="filter st-style" data-v="full-fit125">fit 125</button><button class="filter st-style" data-v="full-fit">fit max</button></span>
     <span class="st-group">centered <button class="filter st-style" data-v="full-t30">0.30em</button><button class="filter st-style" data-v="full-t22">0.22em</button><button class="filter st-style" data-v="full-t16">0.16em</button><button class="filter st-style" data-v="full-t10">0.10em</button></span>
+    <span class="st-group">left-aligned <button class="filter st-style" data-v="full-l30">0.30em</button><button class="filter st-style" data-v="full-l22">0.22em</button><button class="filter st-style" data-v="full-l16">0.16em</button><button class="filter st-style" data-v="full-l10">0.10em</button></span>
     <span class="st-group">weight <button class="filter st-w" data-v="300">300</button><button class="filter st-w" data-v="350">350 ✓</button><button class="filter st-w" data-v="400">400</button><button class="filter st-w" data-v="450">450</button></span>
     <span class="st-group">background <button class="filter st-bg" data-v="paper">paper</button><button class="filter st-bg" data-v="ink">ink</button></span>
     <a id="st-dl" class="st-download" download>download this SVG</a>
@@ -134,7 +135,7 @@ fill("g-social", [
 /* ── Lockup studio ── */
 const st = { style: "full", w: "350", bg: "paper" };
 const stOptions = [];
-for (const style of ["full","full-fit95","full-fit110","full-fit125","full-fit","full-t30","full-t22","full-t16","full-t10"]) for (const w of ["300","350","400","450"]) stOptions.push({style, w});
+for (const style of ["full","full-fit95","full-fit110","full-fit125","full-fit","full-t30","full-t22","full-t16","full-t10","full-l30","full-l22","full-l16","full-l10"]) for (const w of ["300","350","400","450"]) stOptions.push({style, w});
 const stSrc = () => {
   const color = st.bg === "ink" ? "paper" : "gradient";
   return st.style === "full"
