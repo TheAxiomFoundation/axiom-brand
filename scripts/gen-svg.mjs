@@ -42,7 +42,12 @@ function layout(text, wght, tracking = 0) {
     glyphs.push({ d: run.glyphs[i].path.toSVG(), x, ch: text[i] });
     x += run.positions[i].xAdvance + (i < run.glyphs.length - 1 ? tracking : 0);
   }
-  return { glyphs, width: x, capHeight: font.capHeight };
+  const first = run.glyphs[0].path.bbox, last = run.glyphs[run.glyphs.length - 1].path.bbox;
+  return {
+    glyphs, width: x, capHeight: font.capHeight,
+    inkLeft: glyphs[0].x + first.minX,
+    inkRight: glyphs[glyphs.length - 1].x + last.maxX,
+  };
 }
 
 /* Render glyphs into SVG path groups. size = font size in viewBox units.
@@ -131,6 +136,30 @@ function full(wght, color, subTrack = null, align = "center") {
   return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
 }
 
+/* The canonical aligned lockup: FOUNDATION's visible ink spans exactly AXIOM's
+   visible ink (side bearings accounted for), 0.18em tracking, size solved. */
+function fullAligned(wght, color) {
+  const l = layout("AXIOM", wght, 14);
+  const s = SIZE / UPEM;
+  const cap = l.capHeight * s;
+  const inkL = PAD + l.inkLeft * s;           // px position of AXIOM's visible left edge
+  const inkW = (l.inkRight - l.inkLeft) * s;  // px width of AXIOM's visible ink
+  const subWght = Math.min(wght + 100, 500);
+  const probe = layout("FOUNDATION", subWght, 180); // 0.18em tracking
+  const SUB = (inkW / (probe.inkRight - probe.inkLeft)) * UPEM;
+  const subS = SUB / UPEM;
+  const subX = inkL - probe.inkLeft * subS;   // F's ink starts exactly at AXIOM's ink left
+  const gap = 46;
+  const subCap = probe.capHeight * subS;
+  const w = l.width * s + PAD * 2;
+  const h = cap + gap + subCap + PAD * 2;
+  const body =
+    glyphGroup(l, SIZE, PAD, PAD + cap, fillFor(color), true) +
+    "\n  " +
+    glyphGroup(probe, SUB, subX, PAD + cap + gap + subCap, fillFor(color), false);
+  return svgDoc(Math.ceil(w), Math.ceil(h), body, null);
+}
+
 /* ── Mark (∀ alone) and tile ── */
 function mark(wght, color) {
   const l = layout("A", wght);
@@ -160,6 +189,7 @@ function tile(wght, bg, glyphColor, radiusPct = 16) {
 for (const w of WEIGHTS) {
   for (const color of Object.keys(COLORS)) {
     write(`svg/wordmark/full/axiom-full-w${w}-${color}.svg`, full(w, color));
+    write(`svg/wordmark/full-aligned/axiom-full-aligned-w${w}-${color}.svg`, fullAligned(w, color));
     // fixed-tracking FOUNDATION scale (em ×100): t30 airy … t10 snug — centered and left-aligned
     for (const t of [300, 220, 160, 100]) {
       write(`svg/wordmark/full-t${t / 10}/axiom-full-t${t / 10}-w${w}-${color}.svg`, full(w, color, t));
