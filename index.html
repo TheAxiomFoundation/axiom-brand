@@ -95,6 +95,11 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
 <p class="note">Company logo 400×400 · company page cover 1128×191 · personal profile banner 1584×396 · team post 1200×627 (exported at 2×), headshots from the team page.</p>
 <div class="grid" id="g-linkedin"></div>
 
+<h2>Team headshots</h2>
+<p class="note">The headshots used on the team page and in the team-post images, at source resolution
+(Max 444×490 · Ariel 467×467 · Pavel 780×780) in PNG, JPG, and WebP.</p>
+<div class="grid" id="g-team"></div>
+
 <h2>Social & favicons</h2>
 <p class="note">OG image 1200×630 · X header 1500×500 · avatar 400 · GitHub org 500 · icons 32–1024.</p>
 <div class="grid" id="g-social"></div>
@@ -128,6 +133,8 @@ fill("g-linkedin", [
   asset("png/linkedin/team-post-ink-1200x627@2x.png", null, "#e8e6e1"),
   asset("png/linkedin/team-post-paper-1200x627@2x.png", null, "#e8e6e1"),
 ]);
+const person = (slug, label) => `<div class="asset"><div class="thumb solid" style="background:#e8e6e1"><img loading="lazy" src="headshots/${slug}.jpg" alt="Headshot of ${label}"></div><div class="meta"><span class="name">${label}</span><span>${["png","jpg","webp"].map((f, i) => `<a href="headshots/${slug}.${f}" download${i ? ' style="margin-left:.7rem"' : ""}>${f}</a>`).join("")}</span></div></div>`;
+fill("g-team", [person("max-ghenis","Max Ghenis"), person("ariel-kennan","Ariel Kennan"), person("pavel-makarchuk","Pavel Makarchuk")]);
 fill("g-social", [
   ...matrix("social","og"), ...matrix("social","x-header"), ...matrix("social","youtube-banner"),
   ...matrix("email","newsletter-header"),
