@@ -92,7 +92,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
 <div class="grid" id="g-design"></div>
 
 <h2>LinkedIn</h2>
-<p class="note">Company logo 400×400 · company page cover 1128×191 · personal profile banner 1584×396.</p>
+<p class="note">Company logo 400×400 · company page cover 1128×191 · personal profile banner 1584×396 · team post 1200×627 (exported at 2×), headshots from the team page.</p>
 <div class="grid" id="g-linkedin"></div>
 
 <h2>Social & favicons</h2>
@@ -107,7 +107,7 @@ Please don't retype the wordmark in a live font — always use these files.</p>
 </footer>
 
 <script>
-const asset = (src, dl, solid, pdf) => `<div class="asset"><div class="thumb${solid ? " solid" : ""}" ${solid ? `style="background:${solid}"` : ""}><img loading="lazy" src="${src}" alt=""></div><div class="meta"><span class="name">${src.split("/").pop()}</span><span>${pdf ? `<a href="${pdf}" download style="margin-right:.7rem">pdf</a>` : ""}<a href="${dl ?? src}" download>svg</a></span></div></div>`;
+const asset = (src, dl, solid, pdf) => `<div class="asset"><div class="thumb${solid ? " solid" : ""}" ${solid ? `style="background:${solid}"` : ""}><img loading="lazy" src="${src}" alt=""></div><div class="meta"><span class="name">${src.split("/").pop()}</span><span>${pdf ? `<a href="${pdf}" download style="margin-right:.7rem">pdf</a>` : ""}<a href="${dl ?? src}" download>${(dl ?? src).split(".").pop()}</a></span></div></div>`;
 const fill = (id, items) => document.getElementById(id).innerHTML = items.join("");
 const colors = ["gradient","amber","ink","paper","white","black"];
 const pdfFor = (c, n) => ["gradient","ink","black"].includes(c) ? `pdf/${n}.pdf` : null;
@@ -125,6 +125,8 @@ fill("g-design", DESIGN.flatMap(([dir,name]) => TREATS.map(t => asset(`png/${dir
 fill("g-linkedin", [
   asset("png/social/avatar-400.png"), asset("png/social/avatar-ink-400.png"),
   ...matrix("linkedin","company-cover"), ...matrix("linkedin","personal-banner"),
+  asset("png/linkedin/team-post-ink-1200x627@2x.png", null, "#e8e6e1"),
+  asset("png/linkedin/team-post-paper-1200x627@2x.png", null, "#e8e6e1"),
 ]);
 fill("g-social", [
   ...matrix("social","og"), ...matrix("social","x-header"), ...matrix("social","youtube-banner"),
