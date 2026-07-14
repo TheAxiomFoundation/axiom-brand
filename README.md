@@ -42,10 +42,10 @@ insists on PDF/EPS or CMYK, ask — we'll add exports rather than let them retra
 
 ## Weights
 
-The site wordmark currently uses Geist **300**; this kit's channel exports use **350**
-("a bit more", per the July 2026 discussion), with 300/350/400 SVG masters and a
-comparison sheet (`svg/weight-compare.svg`) for the final call. Re-render every PNG at a
-different weight with one flag.
+**350** is the settled weight ("a bit more", per the July 2026 discussion) — the site
+(axiom-foundation.org) uses this kit's w350 lockup, tile favicon, and OG card as of
+Jul 14. The kit keeps 300/350/400/450 SVG masters and a comparison sheet
+(`svg/weight-compare.svg`); re-render every PNG at a different weight with one flag.
 
 ## Rebuilding
 
