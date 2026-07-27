@@ -126,7 +126,9 @@ const matrix = (dir, name) => ["paper","ink"].flatMap(bg => ["full","compact"].m
 fill("g-zoom", [...matrix("zoom","zoom"), ...matrix("zoom","zoom-centered")]);
 const TREATS = ["amberwash","inkglow","amberdeep","glyph-paper","glyph-ink"];
 const DESIGN = [["zoom","zoom"],["linkedin","personal-banner"],["linkedin","company-cover"],["social","og"],["social","x-header"],["social","youtube-banner"],["email","newsletter-header"]];
-fill("g-design", DESIGN.flatMap(([dir,name]) => TREATS.map(t => asset(`png/${dir}/${name}-${t}-full.png`, null, "#e8e6e1"))));
+const designAssets = DESIGN.flatMap(([dir,name]) => TREATS.map(t => asset(`png/${dir}/${name}-${t}-full.png`, null, "#e8e6e1")));
+designAssets.splice(1, 0, asset("png/zoom/zoom-right-amberwash-full.png", null, "#e8e6e1"));
+fill("g-design", designAssets);
 fill("g-linkedin", [
   asset("png/social/avatar-400.png"), asset("png/social/avatar-ink-400.png"),
   ...matrix("linkedin","company-cover"), ...matrix("linkedin","personal-banner"),

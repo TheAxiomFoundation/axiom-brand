@@ -12,6 +12,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const W = process.argv.includes("--weight")
   ? process.argv[process.argv.indexOf("--weight") + 1]
   : "350";
+const ONLY = process.argv.includes("--only")
+  ? process.argv[process.argv.indexOf("--only") + 1]
+  : null;
 const CHROME =
   process.env.CHROME_BIN ??
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -96,6 +99,10 @@ for (const c of DESIGN_CHANNELS)
     add(`${c.dir}/${c.name}-${tName}-full.png`, c.w, c.h, null, LOCKUP.full(t.logo), c.logoW.full, c.place,
         { bgCss: t.css, behind: t.behind ? t.behind() : "" });
 
+/* Zoom amberwash with the logo in the bottom-right corner (mirror of the default) */
+add("zoom/zoom-right-amberwash-full.png", 1920, 1080, null, LOCKUP.full(TREATMENTS.amberwash.logo), 380,
+    "position:absolute;right:72px;bottom:64px", { bgCss: TREATMENTS.amberwash.css });
+
 /* Email signature — transparent, tight, both lockups (gradient + ink) */
 for (const lk of ["full", "compact"])
   for (const color of ["gradient", "ink"])
@@ -128,6 +135,7 @@ add("weight-compare.png", 1600, 1100, PAPER, "svg/weight-compare.svg", 1500, CEN
 const stage = join(root, ".stage");
 mkdirSync(stage, { recursive: true });
 for (const s of SPECS) {
+  if (ONLY && !s.out.includes(ONLY)) continue;
   const outPath = join(root, "png", s.out);
   mkdirSync(dirname(outPath), { recursive: true });
   const bgValue = s.bgCss ?? s.bg ?? "transparent";
@@ -147,4 +155,4 @@ ${s.behind ?? ""}
   console.log(`png/${s.out}`);
 }
 rmSync(stage, { recursive: true, force: true });
-console.log(`done — ${SPECS.length} PNGs`);
+console.log(`done — ${ONLY ? SPECS.filter((s) => s.out.includes(ONLY)).length : SPECS.length} PNGs`);
