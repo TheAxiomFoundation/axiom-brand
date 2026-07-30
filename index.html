@@ -81,7 +81,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
 <div class="grid" id="g-compact"></div>
 
 <h2>Mark & tiles</h2>
-<p class="note">The ∀ alone, and the app-icon tile (paper/ink/amber). Use the tile anywhere square: avatars, favicons, app icons.</p>
+<p class="note">The ∀ alone, the app-icon tile, and the round tile (each in paper/ink/amber). Square tile anywhere square — favicons, app icons, LinkedIn, GitHub. <strong>Round tile on circular platforms</strong> — Bluesky, Slack, Discord, Gravatar, Mastodon: the ∀'s arms fall outside an inscribed circle, so the round version scales the glyph to clear the arc rather than letting the platform crop it.</p>
 <div class="grid" id="g-mark"></div>
 
 <h2>Zoom backgrounds — 1920×1080</h2>
@@ -101,7 +101,7 @@ size; PNGs are pre-sized per channel; vector PDFs and a favicon.ico are in the r
 <div class="grid" id="g-team"></div>
 
 <h2>Social & favicons</h2>
-<p class="note">OG image 1200×630 · X header 1500×500 · avatar 400 · GitHub org 500 · icons 32–1024.</p>
+<p class="note">OG image 1200×630 · X header 1500×500 · avatar 400 · GitHub org 500 · round avatar 400 (circular platforms) · icons 32–1024.</p>
 <div class="grid" id="g-social"></div>
 
 <footer>
@@ -121,6 +121,7 @@ fill("g-compact", colors.map(c => asset(`svg/wordmark/compact/axiom-w350-${c}.sv
 fill("g-mark", [
   ...["gradient","ink","paper"].map(c => asset(`svg/mark/axiom-mark-w350-${c}.svg`)),
   asset("svg/mark/tile/axiom-tile-w350-paper.svg"), asset("svg/mark/tile/axiom-tile-w350-ink.svg"), asset("svg/mark/tile/axiom-tile-w350-amber.svg"),
+  ...["paper","ink","amber"].map(c => asset(`svg/mark/round/axiom-round-w350-${c}.svg`)),
 ]);
 const matrix = (dir, name) => ["paper","ink"].flatMap(bg => ["full","compact"].map(l => asset(`png/${dir}/${name}-${bg}-${l}.png`, null, "#e8e6e1")));
 fill("g-zoom", [...matrix("zoom","zoom"), ...matrix("zoom","zoom-centered")]);
@@ -142,6 +143,7 @@ fill("g-social", [
   ...matrix("email","newsletter-header"),
   ...["full","compact"].flatMap(l => ["gradient","ink"].map(c => asset(`png/email/signature-${l}-${c}-600w.png`))),
   asset("png/social/github-org-500.png"), asset("png/social/github-org-ink-500.png"),
+  ...["","-ink","-amber"].map(c => asset(`png/social/avatar-round${c}-400.png`)),
   ...[512,180].map(s => asset(`png/favicons/axiom-icon-${s}.png`)),
 ]);
 
