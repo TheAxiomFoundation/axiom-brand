@@ -43,7 +43,7 @@ insists on PDF/EPS or CMYK, ask — we'll add exports rather than let them retra
 ## Weights
 
 **350** is the settled weight ("a bit more", per the July 2026 discussion) — the site
-(axiom-foundation.org) uses this kit's w350 lockup, tile favicon, and OG card as of
+(axiom.org) uses this kit's w350 lockup, tile favicon, and OG card as of
 Jul 14. The kit keeps 300/350/400/450 SVG masters and a comparison sheet
 (`svg/weight-compare.svg`); re-render every PNG at a different weight with one flag.
 
@@ -72,6 +72,6 @@ node scripts/render-png.mjs --weight 350  # channel PNGs via headless Chrome
 The ∀XIOM wordmark and mark identify the Axiom Foundation. Partners and press may use
 these files unmodified to reference Axiom (articles, integration pages, event
 materials). Don't alter colors/geometry, imply endorsement, or use the mark for your
-own product identity. Questions: hello@axiom-foundation.org.
+own product identity. Questions: hello@axiom.org.
 
 Geist is used under the [SIL Open Font License](https://github.com/vercel/geist-font).
