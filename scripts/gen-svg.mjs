@@ -274,6 +274,24 @@ function tile(wght, bg, glyphColor, radiusPct = 16) {
   return svgDoc(box, box, body, null);
 }
 
+/* Circular avatar. The ∀'s widest points are its two top arms, which sit ~54 units
+   from the center of the 100-box at tile scale — outside an inscribed circle (r=50).
+   A plain circular crop of the tile would slice both arms off, so the glyph is scaled
+   down to clear the arc with optical margin instead of being masked. */
+function round(wght, bg, glyphColor, size = 92) {
+  const l = layout("A", wght);
+  const box = 100;
+  const s = size / UPEM;
+  const cap = l.capHeight * s;
+  const gw = l.width * s;
+  const ox = (box - gw) / 2;
+  const oy = (box - cap) / 2 + cap;
+  const body =
+    `<circle cx="${box / 2}" cy="${box / 2}" r="${box / 2}" fill="${bg}"/>\n  ` +
+    glyphGroup(l, size, ox, oy, fillFor(glyphColor), true);
+  return svgDoc(box, box, body, null);
+}
+
 /* ── Emit the matrix ── */
 for (const w of WEIGHTS) {
   for (const color of Object.keys(COLORS)) {
@@ -320,6 +338,13 @@ for (const w of WEIGHTS) {
   write(`svg/mark/tile/axiom-tile-w${w}-paper.svg`, tile(w, "#faf9f6", "amber"));
   write(`svg/mark/tile/axiom-tile-w${w}-ink.svg`, tile(w, "#1c1917", "paper"));
   write(`svg/mark/tile/axiom-tile-w${w}-amber.svg`, tile(w, "#92400e", "paper"));
+}
+
+/* Round tiles — same colorways, for circular avatars (Bluesky, Slack, Discord, Gravatar) */
+for (const w of WEIGHTS) {
+  write(`svg/mark/round/axiom-round-w${w}-paper.svg`, round(w, "#faf9f6", "amber"));
+  write(`svg/mark/round/axiom-round-w${w}-ink.svg`, round(w, "#1c1917", "paper"));
+  write(`svg/mark/round/axiom-round-w${w}-amber.svg`, round(w, "#92400e", "paper"));
 }
 
 /* Weight comparison sheet (compact at each weight, labeled with Geist digits) */

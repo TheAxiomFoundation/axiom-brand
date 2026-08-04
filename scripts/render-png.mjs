@@ -118,6 +118,15 @@ for (const [n, svg] of [
   ["github-org-ink-500", `svg/mark/tile/axiom-tile-w${W}-ink.svg`],
 ]) add(`social/${n}.png`, 500, 500, null, svg, 500, "position:absolute;inset:0");
 
+/* Round avatars: circular platforms (Bluesky, Slack, Discord, Gravatar, Mastodon).
+   Corners are transparent, so these sit correctly on any background — and stay
+   correct on the platforms that mask to a circle themselves. */
+for (const [n, svg] of [
+  ["avatar-round-400", `svg/mark/round/axiom-round-w${W}-paper.svg`],
+  ["avatar-round-ink-400", `svg/mark/round/axiom-round-w${W}-ink.svg`],
+  ["avatar-round-amber-400", `svg/mark/round/axiom-round-w${W}-amber.svg`],
+]) add(`social/${n}.png`, 400, 400, null, svg, 400, "position:absolute;inset:0");
+
 /* Favicons / app icons (paper tile is canonical) */
 for (const s of [32, 180, 512, 1024])
   add(`favicons/axiom-icon-${s}.png`, s, s, null, `svg/mark/tile/axiom-tile-w${W}-paper.svg`, s, "position:absolute;inset:0");
